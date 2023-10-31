@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>接口调用案例</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .searchUser input {
+            width: 300px;
+            height: 30px;
+            padding-left: 10px;
+            border: 1px solid gainsboro;
+            border-radius: 4px;
+            box-shadow: 3px 1px 4px 1px rgba(0, 0, 0, .2);
+
+        }
+
+        .searchUser .searchBtn {
+            height: 30px;
+            border: 1px solid bisque;
+            background-color: bisque;
+            border-radius: 4px;
+            box-shadow: 3px 1px 4px 1px rgba(0, 0, 0, .2);
+            margin-left: 10px;
+        }
+
+        table {
+            text-align: center;
+        }
+
+        tbody tr,
+        td {
+            height: 35px;
+            border: 1px solid gainsboro;
+        }
+
+        button {
+            width: 50px;
+            height: 25px;
+            margin-top: 15px;
+            margin-right: 10px;
+        }
+
+        .lists {
+            margin-top: 15px;
+        }
+
+        .lists-table {
+            /* background-color: gold; */
+            width: 800px;
+            border-collapse: collapse;
+
+        }
+
+        .lists-table thead {
+            height: 35px;
+            text-align: center;
+            background-color: tan;
+        }
+
+        .lists-table th {
+            height: 35px;
+            border: 1px solid gainsboro;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 接口调用功能案例
+        需求：
+        1.判断code的值为1才显示表格内的数据，如果code=0，那就只显示表头。显示的数据为响应值的list中的数据
+        2.可以根据createBy单独搜索某条数据
+     -->
+    <div id="app">
+        <h1>个人信息</h1>
+        <div class="searchUser">
+            <input type="text" placeholder="请输入用户名..." v-model="msg">
+            <button class="searchBtn" @click="inputValue(msg)">搜索</button>
+        </div>
+        <!-- 列表展示 -->
+        <div class="lists">
+            <table class="lists-table">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>ID</th>
+                        <th>用户名</th>
+                        <th>创建时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr :key="item.index" v-for="(item ,index) in userList" v-cloak v-if="item.createBy">
+                        <td>{{index + 1}}</td>
+                        <td>{{item.ids}}</td>
+                        <td>{{item.createBy2}}</td>
+                        <td>{{item.createTime}}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <td></td>
+                    <td class="pageNow">当前页数:1</td>
+                    <td>
+                        <a href="#" @click.prevent>上一页</a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="#" @click.prevent>下一页</a>
+                    </td>
+                    <td class="total">总页数:10</td>
+
+                </tfoot>
+            </table>
+        </div>
+
+
+    </div>
+
+
+    <!-- 引入vue.js库文件 -->
+    <script type="text/javascript" src="../JS/vue.js"></script>
+    <script type="text/javascript">
+        var p = new Promise(function (resolve, reject) {
+            // 这里用与实现异步任务
+            // resolve,reject这两个都是方法可以调用
+            setTimeout(function () {
+                var code = 1;
+                var data = [{
+                    pageNum: 1,
+                    pageSize: 10
+                }];
+                
+                if (code == 1) {
+                    // 成功调用resolve
+                    resolve(data)
+                } else {
+                    // 失败调用reject
+                    reject('error')
+                }
+            }, 100)
+        });
+        p.then(function (data) {
+            // data得到的是resolve(userList)
+            // 从resolve得到正常的结果
+            // 成功得到用户信息，然后将用户信息填充到表格里面
+            console.log(data);
+        }, function (info) {
+            // info得到的是reject('error')
+            // 从reject得到错误的信息
+            alert(info);
+        });
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                msg: '',
+                // 原始数据显示
+                userList: [{
+                    "ids": "1527049671761989632",
+                    "measurePointName": "A2K66+698(Ⅴ)GD01",
+                    "measurePointId": "1453951062389035008",
+                    "createBy": "金世燕1",
+                    "createBy2": "金世燕",
+                    "createTime": "2023-09-11 12:05:22",
+                    "frequencyNum": 2
+                },
+                {
+                    "ids": "1527048158918479872",
+                    "measurePointName": "A2K66+698(Ⅴ)SL04",
+                    "measurePointId": "1527042884530868224",
+                    "createBy": "金世燕2",
+                    "createBy2": "金世燕",
+
+                    "createTime": "2023-09-11 11:59:21",
+                    "frequencyNum": null
+                },
+                {
+                    "ids": "1527047202281623552",
+                    "measurePointName": "A2K66+698(Ⅴ)SL02",
+                    "measurePointId": "1527042884530868224",
+                    "createBy": "金世燕3",
+                    "createBy2": "金世燕",
+
+                    "createTime": "2023-09-11 11:55:33",
+                    "frequencyNum": 1
+                },
+                {
+                    "ids": "1527047026309599232",
+                    "measurePointName": "A2K66+698(Ⅴ)SL01",
+                    "measurePointId": "1527042881582272512",
+                    "createBy": "金世燕4",
+                    "createBy2": "金世燕",
+
+                    "createTime": "2023-09-11 11:54:51",
+                    "frequencyNum": 1
+                },
+                {
+                    "ids": "1517645075801182208",
+                    "measurePointName": "K159+908.00(Ⅴ)GD01",
+                    "measurePointId": "1517645035628138496",
+                    "createBy": "苟晓军5",
+                    "createBy2": "苟晓军",
+
+                    "createTime": "2023-08-16 13:14:52",
+                    "frequencyNum": null
+                },
+                {
+                    "ids": "1517644259493154816",
+                    "measurePointName": "ZK184+074.00(Ⅴ)SL02",
+                    "measurePointId": "1505834560695308288",
+                    "createBy": "苟晓军6",
+                    "createBy2": "苟晓军",
+
+                    "createTime": "2023-08-16 13:11:37",
+                    "frequencyNum": null
+                },
+                {
+                    "ids": "1517644255495983104",
+                    "measurePointName": "ZK184+074.00(Ⅴ)SL01",
+                    "measurePointId": "1505834512322400256",
+                    "createBy": "苟晓军7",
+                    "createBy2": "苟晓军",
+
+                    "createTime": "2023-08-16 13:11:36",
+                    "frequencyNum": null
+                },
+                {
+                    "ids": "1517644251628834816",
+                    "measurePointName": "ZK184+074.00(Ⅴ)GD01",
+                    "measurePointId": "1505834462640869376",
+                    "createBy": "苟晓军8",
+                    "createBy2": "苟晓军",
+
+                    "createTime": "2023-08-16 13:11:35",
+                    "frequencyNum": null
+                },
+                {
+                    "ids": "1517603024099348480",
+                    "measurePointName": "ZK5+005.00(Ⅳ)SL01",
+                    "measurePointId": "1517602002329145344",
+                    "createBy": "周百顺9",
+                    "createBy2": "周百顺",
+
+                    "createTime": "2023-08-16 10:27:46",
+                    "frequencyNum": null
+                },
+                {
+                    "ids": "1517383083509157888",
+                    "measurePointName": "YK13+530(Ⅳ)SL02",
+                    "measurePointId": "1512983698318823424",
+                    "createBy": "炉慈2标临时账号10",
+                    "createBy2": "炉慈2标临时账号",
+
+                    "createTime": "2023-08-15 19:53:48",
+                    "frequencyNum": null
+                }],
+            },
+            methods: {
+                // 搜索名称显示
+                inputValue: function (msg) {
+                    console.log(111);
+                    // 点击按钮之后，拿到input的val
+                    console.log('搜索框的内容是' + this.msg);
+                
+                    var list = []
+
+                    // 通过遍历用户名来判断相不相等
+                    for (var i = 0; i < this.userList.length; i++) {
+                        // console.log(i);
+                        var createBy = this.userList[i].createBy2
+                        // console.log(i, createBy);
+                        // console.log(this.userList[i].createBy);
+                        if (this.msg == createBy) {
+                            list.push(this.userList[i])
+                            // console.log(list);
+                            console.log('拿到了');
+                        } else {
+                            console.log('没达到');
+                        }
+                    }
+                    this.userList = list
+                    console.log('新的输出' +list);
+                },
+            }
+
+        })
+
+
+
+
+    </script>
+</body>
+
+</html>
